@@ -1,0 +1,96 @@
+-- Database: CanvasInstructure
+
+-- DROP DATABASE IF EXISTS "CanvasInstructure";
+
+CREATE DATABASE "CanvasInstructure"
+    WITH
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'English_India.1252'
+    LC_CTYPE = 'English_India.1252'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1
+    IS_TEMPLATE = False;
+
+
+-- Table: public.account
+
+-- DROP TABLE IF EXISTS public.account;
+
+CREATE TABLE IF NOT EXISTS public.account
+(
+    id integer NOT NULL DEFAULT nextval('account_id_seq'::regclass),
+    account_id integer,
+    name character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    workflow_state character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    parent_account_id integer,
+    root_account_id integer,
+    uuid character varying(500) COLLATE pg_catalog."default" NOT NULL,
+    default_storage_quota_mb integer NOT NULL,
+    default_user_storage_quota_mb integer NOT NULL,
+    default_group_storage_quota_mb integer NOT NULL,
+    default_time_zone character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT account_pkey PRIMARY KEY (id),
+    CONSTRAINT account_account_id_key UNIQUE (account_id)
+)
+
+-- Table: public.course
+
+-- DROP TABLE IF EXISTS public.course;
+
+CREATE TABLE IF NOT EXISTS public.course
+(
+    id integer NOT NULL DEFAULT nextval('course_id_seq'::regclass),
+    name character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    account_id integer,
+    uuid character varying(500) COLLATE pg_catalog."default" NOT NULL,
+    start_at character varying(200) COLLATE pg_catalog."default",
+    grading_standard_id integer,
+    is_public boolean NOT NULL,
+    created_at character varying(200) COLLATE pg_catalog."default",
+    course_code character varying(255) COLLATE pg_catalog."default",
+    default_view character varying(255) COLLATE pg_catalog."default",
+    root_account_id integer,
+    enrollment_term_id integer,
+    license character varying(255) COLLATE pg_catalog."default",
+    end_at character varying(200) COLLATE pg_catalog."default",
+    public_syllabus boolean NOT NULL,
+    public_syllabus_to_auth boolean NOT NULL,
+    storage_quota_mb integer,
+    is_public_to_auth_users boolean NOT NULL,
+    apply_assignment_group_weights boolean NOT NULL,
+    time_zone character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    blueprint boolean NOT NULL,
+    sis_course_id character varying(255) COLLATE pg_catalog."default",
+    sis_import_id character varying(255) COLLATE pg_catalog."default",
+    integration_id character varying(255) COLLATE pg_catalog."default",
+    hide_final_grades boolean NOT NULL,
+    workflow_state character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    restrict_enrollments_to_course_dates boolean NOT NULL,
+    course_id integer,
+    CONSTRAINT course_pkey PRIMARY KEY (id),
+    CONSTRAINT unique_course_id UNIQUE (course_id),
+    CONSTRAINT course_account_id_fkey FOREIGN KEY (account_id)
+        REFERENCES public.account (account_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+-- Table: public.enrollment
+
+-- DROP TABLE IF EXISTS public.enrollment;
+
+CREATE TABLE IF NOT EXISTS public.enrollment
+(
+    id integer NOT NULL DEFAULT nextval('enrollment_id_seq'::regclass),
+    type character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    role_id integer,
+    user_id integer,
+    enrollment_state character varying(100) COLLATE pg_catalog."default",
+    course_id integer,
+    CONSTRAINT enrollment_pkey PRIMARY KEY (id),
+    CONSTRAINT enrollment_course_id_fkey FOREIGN KEY (course_id)
+        REFERENCES public.course (course_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
