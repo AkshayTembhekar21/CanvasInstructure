@@ -23,7 +23,7 @@ SET row_security = off;
 -- Name: CanvasInstructure; Type: DATABASE; Schema: -; Owner: postgres
 --
 
-CREATE DATABASE "CanvasInstructure" WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'English_India.1252';
+CREATE DATABASE "CanvasInstructure" WITH TEMPLATE = template0 ENCODING = 'UTF8';
 
 
 ALTER DATABASE "CanvasInstructure" OWNER TO postgres;
